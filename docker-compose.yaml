@@ -1,0 +1,45 @@
+version: '3'
+
+# Todos os containers que vamos trabalhar
+services: 
+
+  app:
+    build: 
+      context: node
+    container_name: app
+    # Utiliza o dockerize para que o app aguarde o db rodar na porta 3306 (do container) antes de subir o app
+    # Essa tentativa se estende por 20s
+    # Após rodar o db, o entrypoint que será rodado é o "docker-entrypoint.sh"
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+    networks: 
+      - node-network
+    volumes: 
+      - ./node:/usr/src/app
+    tty: true # Entrar de forma interativa no container (-it)
+    ports: 
+      - "3000:3000"
+    depends_on: # Não funciona na versão 3  
+       - db
+
+  # Para entrar no container em execução: `docker exec -it db bash`      
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true # Entrar de forma interativa no container (-it)
+    volumes: 
+      # Tudo o que formos mexer na pasta lib/mysql terá impacto na pasta ./mysql.
+      # Logo, se o container deixar de rodar, as alterações continuam
+      - ./mysql:/var/lib/mysql 
+    # Settando variáveis de ambiente  
+    environment: 
+      - MYSQL_DATABASE=nodedb # Para criar automaticamente o banco "nodedb"
+      - MYSQL_ROOT_PASSWORD=root
+      #- MYSQL_USER=root
+    networks: 
+      - node-network
+
+networks: 
+  node-network:
+    driver: bridge      

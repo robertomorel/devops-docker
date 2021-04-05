@@ -1,0 +1,19 @@
+#docker run --rm -it -v $(pwd)/:/usr/src/app -p 3000:3000 node:15 bash
+
+# Cria um container a partir da imagem node:15
+FROM node:15
+
+# Vai para o caminho no container
+WORKDIR /usr/src/app
+
+# Pega todos os arquivos que estão na pasta atual e joga para o container para criar a imagem
+COPY . .
+
+# Exportar na porta 3000
+EXPOSE 3000
+
+# Roda os comandos "node index.js"
+CMD ["node","index.js"]
+
+# To build this Dockerfile: docker build -t robertomorel/hello-express . -f Dockerfile.prod
+# To test: docker run -p 3000:3000 robertomorel/hello-express

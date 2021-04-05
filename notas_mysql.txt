@@ -1,0 +1,16 @@
+- Para rodar o container do MySQL em linha de comando
+docker exec -it db bash
+
+- Entrando no MySQL
+mysql -uroot -p .:. password: 'root'
+
+- Comandos úteis
+Mostrar DBs: `show databases;`
+Criando nova tabela "people":
+`
+use nodedb;
+create table people(id int not null auto_increment, name varchar(255), primary key(id));
+desc people;
+
+select * from people;
+`

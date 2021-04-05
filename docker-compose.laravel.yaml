@@ -1,0 +1,27 @@
+version: '3'
+
+services: 
+
+  laravel:
+    build: 
+      context: ./laravel # Passar o contexto, ou seja, a pasta que está o Dockerfile do laravel
+      dockerfile: Dockerfile.prod # Nome do Dockerfile
+    image: wesleywillians/laravel:prod
+    container_name: laravel
+    networks: 
+      - laranet
+
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile.prod
+    image: wesleywillians/nginx:prod
+    container_name: nginx
+    networks: 
+      - laranet
+    ports: 
+      - "8080:80"
+
+networks: 
+  laranet:
+    driver: bridge      

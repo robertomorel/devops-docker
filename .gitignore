@@ -1,0 +1,4 @@
+# Volume criado a partir da execução do docker-compose
+/mysql
+
+/node/node_modules
